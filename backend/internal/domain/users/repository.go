@@ -2,8 +2,14 @@ package users
 
 import (
 	"context"
+	"errors"
 
 	"gorm.io/gorm"
+)
+
+var (
+	ErrNotFoundUser     = errors.New("user not found")
+	ErrUserAlreadyExist = errors.New("user already exist in database")
 )
 
 type Repository interface {
@@ -37,10 +43,28 @@ func (r *repository) Delete(ctx context.Context, id uint) error {
 	return nil
 }
 func (r *repository) FindByID(ctx context.Context, id uint) (*User, error) {
-	return nil, nil
+	var user User
+
+	if err := r.db.WithContext(ctx).Where("id = ?", id).First(&user).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound){
+			return nil, ErrNotFoundUser
+		}
+		return nil, err
+	}
+
+	return &user, nil
 }
 func (r *repository) FindByEmail(ctx context.Context, email string) (*User, error) {
-	return nil, nil
+	var user User
+
+	if err := r.db.WithContext(ctx).Where("email = ?", email).First(&user).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound){
+			return nil, ErrNotFoundUser
+		}
+		return nil, err
+	}
+
+	return &user, nil
 }
 func (r *repository) FindAll(ctx context.Context, user *User) ([]*User, error) {
 	return nil, nil

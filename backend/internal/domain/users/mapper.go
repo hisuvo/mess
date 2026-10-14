@@ -6,6 +6,7 @@ func ToUserResponse(user *User) *dto.UserResponse {
 	if user == nil {
 		return nil
 	}
+	
 	return &dto.UserResponse{
 		ID:        user.ID,
 		Name:      user.Name,

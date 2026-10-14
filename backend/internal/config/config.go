@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"time"
 
 	"github.com/joho/godotenv"
 )
@@ -14,7 +15,7 @@ type Config struct {
 	JwtSecret string
 	JwtIssuer string
 	JwtAudience string
-	JwtExpiresIn int
+	JwtExpiresIn time.Duration
 	AdminName string
 	AdminEmail string
 	AdminPassword string
@@ -46,13 +47,22 @@ func LoadEnv() (*Config, error) {
 		fmt.Println("Here env file load")
 	}
 
+	jwtExpiresIn, err := time.ParseDuration(os.Getenv("JWT_EXPIRES_IN"))
+	if err != nil {
+		return nil, fmt.Errorf("invalid JWT_EXPIRES_IN: %w", err)
+	}
+
+	if jwtExpiresIn <= 0 {
+		return nil, fmt.Errorf("JWT_EXPIRES_IN must be greater than zero")
+	}
+
 	return &Config{
 		Port: GetStringEnv("PORT"),
 		DatabaseURL: GetStringEnv("DATABASE_URL"),
 		JwtSecret: GetStringEnv("JWT_SECRET"),
 		JwtIssuer: GetStringEnv("JWT_ISSUER"),
 		JwtAudience: GetStringEnv("JWT_AUDIENCE"),
-		// JwtExpiresIn: jwtExpiresIn,
+		JwtExpiresIn: jwtExpiresIn,
 		AdminEmail: GetStringEnv("ADMIN_EMAIL"),
 		AdminPassword: GetStringEnv("ADMIN_PASSWORD"),
 		AdminName: GetStringEnv("ADMIN_NAME"),

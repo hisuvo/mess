@@ -1,0 +1,33 @@
+# A user exposed through the GraphQL API.
+type User {
+  id: ID!
+  name: String!
+  email: String!
+  password: String!
+  imageUrl: String!
+  phone: String!
+  address: String!
+}
+
+# Input accepted by the createUser mutation.
+input CreateUserInput {
+  name: String!
+  email: String!
+  password: String!
+  imageUrl: String!
+  phone: String!
+  address: String!
+}
+
+type Query {
+  # Fetch all users belonging to a mess.
+  users(coachingId: Int!): [Student!]!
+
+  # Fetch one user by ID within a mess.
+  user(coachingId: Int!, id: ID!): User
+}
+
+type Mutation {
+  # Create a user within a mess.
+  createStudent(coachingId: Int!, input: CreateStudentInput!): Student!
+}

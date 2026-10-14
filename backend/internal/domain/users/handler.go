@@ -4,6 +4,7 @@ import (
 	"messify/internal/domain/users/dto"
 	"messify/internal/httpresponse"
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo/v5"
 )
@@ -43,6 +44,7 @@ func (h *handler) Create(c *echo.Context) error {
 
 	return httpresponse.Success(c, http.StatusCreated, "User created successfully", result)
 }
+
 func (h *handler) Update(c *echo.Context) error {
 	return nil
 }
@@ -50,7 +52,19 @@ func (h *handler) Delete(c *echo.Context) error {
 	return nil
 }
 func (h *handler) FindByID(c *echo.Context) error {
-	return nil
+	id, err := strconv.Atoi(c.Param("id"))
+
+	if err != nil {
+		return httpresponse.Error(c, http.StatusBadRequest, "Invalid user ID", nil, err.Error())
+	}
+
+	result, err := h.service.FindByID(c.Request().Context(), uint(id))
+
+	if err != nil {
+		return httpresponse.Error(c, http.StatusInternalServerError, "Failed to find user", nil, err.Error())
+	}
+
+	return httpresponse.Success(c, http.StatusOK, "User found successfully", result)
 }
 func (h *handler) FindByEmail(c *echo.Context) error {
 	return nil

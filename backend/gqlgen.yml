@@ -1,0 +1,21 @@
+# gqlgen.yml
+# Tells gqlgen where to find the schema and generate Go code.
+
+schema:
+  - internal/domain/users/graphql/schema.graphqls
+
+exec:
+  filename: internal/domain/users/graphql/generated.go
+  package: graphql
+
+model:
+  filename: graph/model/models_gen.go
+  package: model
+
+resolver:
+  layout: follow-schema
+  dir: internal/domain/users/graphql
+  package: graphql
+  filename_template: "{name}.resolvers.go"
+
+# Keep generated GraphQL models separate from GORM entities.
