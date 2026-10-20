@@ -1,9 +1,13 @@
 package dto
 
-import "time"
+import (
+	"time"
+)
 
 type UserResponse struct {
 	ID        uint      `json:"id"`
+	TenantID  *uint     `json:"tenant_id,omitempty"`
+	RoleID    *uint     `json:"role_id,omitempty"`
 	Name      string    `json:"name"`
 	Email     string    `json:"email"`
 	Phone     string    `json:"phone"`

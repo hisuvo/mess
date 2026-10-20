@@ -1,6 +1,8 @@
 package routes
 
 import (
+	"messify/internal/domain/bazars"
+	"messify/internal/domain/tenants"
 	"messify/internal/domain/users"
 	"net/http"
 	"time"
@@ -23,11 +25,14 @@ func RegisterRoutes(e *echo.Echo, db *gorm.DB) {
 		})
 	})
 
+	// tenants routes
+	tenants.RegisterRoute(api, db)
+	
 	// users routes
 	users.RegisterRoute(api, db)
 
-	// // Teacher routes
-	// teachers.RegisterRoute(api, db)
+	// Bazars routes
+	bazars.RegisterRoute(api, db)
 
 	// // Student routes
 	// students.RegisterRoute(api, db)

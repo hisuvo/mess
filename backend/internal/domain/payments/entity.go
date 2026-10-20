@@ -48,8 +48,8 @@ type Payment struct {
 	UserID        *uint         `gorm:"index" json:"user_id,omitempty"`
 	User          *users.User   `gorm:"foreignKey:UserID" json:"user,omitempty"`
 	Amount        float64       `gorm:"type:decimal(10,2);not null" json:"amount"`
-	Type          PaymentType   `gorm:"type:varchar(50);not null" json:"type"`
-	Method        PaymentMethod `gorm:"type:varchar(30);not null;default:'CASH'" json:"method"`
+	PaymentType   PaymentType   `gorm:"type:varchar(50);not null" json:"payment_type"`
+	PaymentMethod PaymentMethod `gorm:"type:varchar(30);not null;default:'CASH'" json:"payment_method"`
 	PaymentDate   time.Time     `gorm:"type:date;not null;index" json:"payment_date"`
 	TransactionID string        `gorm:"type:varchar(100)" json:"transaction_id,omitempty"`
 	Status        PaymentStatus `gorm:"type:varchar(30);not null;default:'COMPLETED';index" json:"status"`

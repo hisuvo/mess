@@ -7,7 +7,7 @@ type CreateUserRequest struct {
 	Password string `json:"password" validate:"required,min=8"`
 	ImageUrl string `json:"image_url" validate:"omitempty"`
 	Address  string `json:"address" validate:"omitempty"`
-	Role     string `json:"role" validate:"required,oneof=ADMIN MANAGER MEMBER"`
+	Role     string `json:"role" validate:"omitempty,oneof=ADMIN MANAGER MEMBER"`
 	Status   string `json:"status" validate:"omitempty,oneof=ACTIVE INACTIVE"`
 }
 
