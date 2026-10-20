@@ -1,4 +1,4 @@
-package miles
+package meals
 
 import (
 	"time"
@@ -8,15 +8,15 @@ import (
 	"gorm.io/gorm"
 )
 
-type MileStatus string
+type MealStatus string
 
 const (
-	MileStatusActive    MileStatus = "ACTIVE"
-	MileStatusPending   MileStatus = "PENDING"
-	MileStatusCancelled MileStatus = "CANCELLED"
+	MealStatusActive    MealStatus = "ACTIVE"
+	MealStatusPending   MealStatus = "PENDING"
+	MealStatusCancelled MealStatus = "CANCELLED"
 )
 
-type Mile struct {
+type Meal struct {
 	gorm.Model
 
 	TenantID  uint        `gorm:"index;not null" json:"tenant_id"`
@@ -28,9 +28,9 @@ type Mile struct {
 	Dinner    float64     `gorm:"type:decimal(5,2);default:0" json:"dinner"`
 	Total     float64     `gorm:"type:decimal(6,2);default:0" json:"total"`
 	Note      string      `gorm:"type:text" json:"note,omitempty"`
-	Status    MileStatus  `gorm:"type:varchar(30);not null;default:'ACTIVE'" json:"status"`
+	Status    MealStatus  `gorm:"type:varchar(30);not null;default:'ACTIVE'" json:"status"`
 }
 
-func (m *Mile) CalculateTotal() float64 {
+func (m *Meal) CalculateTotal() float64 {
 	return m.Breakfast + m.Lunch + m.Dinner
 }

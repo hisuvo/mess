@@ -2,7 +2,7 @@ package deposits
 
 import "messify/internal/domain/deposits/dto"
 
-func ToDepositeResponse(deposit *Deposits) *dto.DepositsResponse{
+func ToDepositeResponse(deposit *Deposit) *dto.DepositsResponse{
 	if deposit == nil {
 		return nil
 	}
@@ -10,7 +10,7 @@ func ToDepositeResponse(deposit *Deposits) *dto.DepositsResponse{
 	return  &dto.DepositsResponse{}
 }
 
-func ToDepositeResponses(deposites []*Deposits) []*dto.DepositsResponse{
+func ToDepositeResponses(deposites []*Deposit) []*dto.DepositsResponse{
 	if len(deposites) == 0 {
 		return nil
 	}

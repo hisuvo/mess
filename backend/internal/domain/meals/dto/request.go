@@ -2,7 +2,7 @@ package dto
 
 import "time"
 
-type RequestCreateMile struct {
+type RequestCreatemeal struct {
 	TenantID  uint      `json:"tenant_id" validate:"required"`
 	UserID    uint      `json:"user_id" validate:"required"`
 	Date      time.Time `json:"date" validate:"required"`
@@ -12,7 +12,7 @@ type RequestCreateMile struct {
 	Note      string    `json:"note" validate:"omitempty"`
 }
 
-type RequestUpdateMile struct {
+type RequestUpdatemeal struct {
 	ID        uint    `json:"id" validate:"required"`
 	Breakfast float64 `json:"breakfast" validate:"omitempty"`
 	Lunch     float64 `json:"lunch" validate:"omitempty"`

@@ -41,4 +41,3 @@ type Deposit struct {
 	Note          string        `gorm:"type:text" json:"note,omitempty"`
 }
 
-type Deposits = Deposit

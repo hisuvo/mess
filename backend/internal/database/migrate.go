@@ -3,7 +3,7 @@ package database
 import (
 	"messify/internal/domain/bazars"
 	"messify/internal/domain/deposits"
-	"messify/internal/domain/miles"
+	"messify/internal/domain/meals"
 	"messify/internal/domain/notices"
 	"messify/internal/domain/payments"
 	"messify/internal/domain/permssions"
@@ -21,8 +21,8 @@ func Migrate(db *gorm.DB) {
 		&permssions.Permission{},
 		&roles.Role{},
 		&users.User{},
-		&miles.Mile{},
 		&bazars.Bazar{},
+		&meals.Meal{},
 		&deposits.Deposit{},
 		&payments.Payment{},
 		&notices.Notice{},

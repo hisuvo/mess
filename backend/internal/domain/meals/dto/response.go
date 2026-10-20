@@ -2,7 +2,7 @@ package dto
 
 import "time"
 
-type ResponseMile struct {
+type Responsemeal struct {
 	ID        uint      `json:"id"`
 	TenantID  uint      `json:"tenant_id"`
 	UserID    uint      `json:"user_id"`

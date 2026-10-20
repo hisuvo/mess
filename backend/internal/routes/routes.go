@@ -2,6 +2,9 @@ package routes
 
 import (
 	"messify/internal/domain/bazars"
+	"messify/internal/domain/deposits"
+	"messify/internal/domain/meals"
+	"messify/internal/domain/notices"
 	"messify/internal/domain/tenants"
 	"messify/internal/domain/users"
 	"net/http"
@@ -34,10 +37,12 @@ func RegisterRoutes(e *echo.Echo, db *gorm.DB) {
 	// Bazars routes
 	bazars.RegisterRoute(api, db)
 
-	// // Student routes
-	// students.RegisterRoute(api, db)
+	// Notices routes
+	notices.RegisterRoute(api, db)
 
-	// // Subject routes
-	// subjects.RegisterRoute(api, db)
-	
+	// Mill routes
+	meals.RegisterRoute(api, db)
+
+	// deposits routes
+	deposits.RegisterRoute(api, db)
 }
