@@ -11,14 +11,19 @@ import (
 
 type Config struct {
 	Port string
+	
 	DatabaseURL string
+
 	JwtSecret string
 	JwtIssuer string
 	JwtAudience string
 	JwtExpiresIn time.Duration
-	AdminName string
-	AdminEmail string
-	AdminPassword string
+
+	OwnerName string
+	OwnerEmail string
+	OwnerPassword string
+	OwnerPhone string
+
 	ApiKey string
 }
 
@@ -63,9 +68,9 @@ func LoadEnv() (*Config, error) {
 		JwtIssuer: GetStringEnv("JWT_ISSUER"),
 		JwtAudience: GetStringEnv("JWT_AUDIENCE"),
 		JwtExpiresIn: jwtExpiresIn,
-		AdminEmail: GetStringEnv("ADMIN_EMAIL"),
-		AdminPassword: GetStringEnv("ADMIN_PASSWORD"),
-		AdminName: GetStringEnv("ADMIN_NAME"),
+		OwnerEmail: GetStringEnv("OWNER_EMAIL"),
+		OwnerPassword: GetStringEnv("OWNER_PASSWORD"),
+		OwnerName: GetStringEnv("OWNER_NAME"),
 		ApiKey: GetStringEnv("API_KEY"),
 	}, nil
 }

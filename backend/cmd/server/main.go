@@ -13,7 +13,7 @@ func main() {
 		fmt.Println("Env loading error: ", err.Error())
 	}
 	
-	db, err := database.ConnectDB(config.DatabaseURL)
+	db, err := database.ConnectDB(config)
 	if err != nil {
 		fmt.Println("Database connection error: ", err.Error())
 	}
