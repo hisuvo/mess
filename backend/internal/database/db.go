@@ -18,7 +18,10 @@ func ConnectDB(cnfg *config.Config) (*gorm.DB, error) {
 		return nil, errors.New("Database connection string is empty")
 	}
 	
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
+		TranslateError: true,
+	})
+	
 	if err != nil {
 		fmt.Println("Database connection error: ", err.Error())
 	}

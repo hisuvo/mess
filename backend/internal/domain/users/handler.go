@@ -15,7 +15,7 @@ type Handler interface {
 	Delete(c *echo.Context) error
 	FindByID(c *echo.Context) error
 	FindByEmail(c *echo.Context) error
-	FindAll(c *echo.Context) error
+	GetAll(c *echo.Context) error
 }
 
 type handler struct {
@@ -48,9 +48,11 @@ func (h *handler) Create(c *echo.Context) error {
 func (h *handler) Update(c *echo.Context) error {
 	return nil
 }
+
 func (h *handler) Delete(c *echo.Context) error {
 	return nil
 }
+
 func (h *handler) FindByID(c *echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 
@@ -66,13 +68,17 @@ func (h *handler) FindByID(c *echo.Context) error {
 
 	return httpresponse.Success(c, http.StatusOK, "User found successfully", result)
 }
+
 func (h *handler) FindByEmail(c *echo.Context) error {
 	return nil
 }
-func (h *handler) FindAll(c *echo.Context) error {
-	return c.JSON(http.StatusOK,map[string]any{
-		"success":true,
-		"message":"Get users successfully",
-		"data":[]dto.UserResponse{},
-	})
+
+func (h *handler) GetAll(c *echo.Context) error {
+	response, err := h.service.GetAll(c.Request().Context())
+
+	if err != nil {
+		return httpresponse.Error(c, http.StatusNotFound, "user not found", nil, err.Error())
+	}
+
+	return httpresponse.Success(c, http.StatusOK, "user retrived successfully", response)
 }

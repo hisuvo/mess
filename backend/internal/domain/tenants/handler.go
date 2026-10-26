@@ -1,6 +1,7 @@
 package tenants
 
 import (
+	"messify/internal/domain/tenants/dto"
 	"messify/internal/httpresponse"
 	"net/http"
 
@@ -18,6 +19,20 @@ func NewHandler(service Service) *handler {
 }
 
 func (h *handler) CreateTenant(c *echo.Context) error {
+	var tenant dto.RequestCreateTenant
+
+	if err := c.Bind(&tenant); err != nil {
+		return httpresponse.Error(c, http.StatusBadRequest, "invalied tenant field request", nil, err.Error())
+	}
+
+	if err := c.Validate(&tenant); err != nil {
+		return httpresponse.Error(c, http.StatusBadRequest, "tenant validation request failed", nil, err.Error())
+	}
+
+	if err := h.service.CreateTenant(c.Request().Context(), &tenant); err != nil {
+		return httpresponse.Error(c, http.StatusBadRequest, "tenant created request failed", nil, err.Error())
+	}
+
 	return httpresponse.Success(c, http.StatusOK, "Tenant create successfully", nil)
 }
 

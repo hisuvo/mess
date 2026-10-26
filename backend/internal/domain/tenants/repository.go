@@ -2,12 +2,17 @@ package tenants
 
 import (
 	"context"
+	"errors"
 
 	"gorm.io/gorm"
 )
 
+var (
+	ErrTenantEmailExists = errors.New("Email already used")
+)
+
 type Repository interface {
-	CreateTenant(ctx context.Context, tenants *Tenant) error
+	CreateTenant(ctx context.Context, tenant *Tenant) error
 	GetAll(ctx context.Context) ([]*Tenant, error)
 	GetById(ctx context.Context, id uint) (*Tenant, error)
 	FindByEmail(ctx context.Context, email string) (*Tenant, error)
@@ -25,7 +30,21 @@ func NewRepository(db *gorm.DB) Repository {
 	}
 }
 
-func (r *repository) CreateTenant(ctx context.Context, tenants *Tenant) error {
+
+func (r *repository) CreateTenant(
+	ctx context.Context,
+	tenant *Tenant,
+) error {
+	err := r.db.WithContext(ctx).Create(tenant).Error
+	
+	if err != nil {
+		if errors.Is(err, gorm.ErrDuplicatedKey) {
+			return ErrTenantEmailExists
+		}
+
+		return err
+	}
+
 	return nil
 }
 

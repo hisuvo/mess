@@ -1,6 +1,6 @@
 module messify
 
-go 1.26.4
+go 1.27.0
 
 require (
 	github.com/go-playground/validator/v10 v10.30.5

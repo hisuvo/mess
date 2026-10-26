@@ -15,5 +15,5 @@ func RegisterRoute(api *echo.Group, db *gorm.DB) {
 	api.DELETE("/users/:id", handler.Delete)
 	api.GET("/users/:id", handler.FindByID)
 	api.GET("/users/email/:email", handler.FindByEmail)
-	api.GET("/users", handler.FindAll)
+	api.GET("/users", handler.GetAll)
 }

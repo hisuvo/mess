@@ -18,7 +18,7 @@ type Repository interface {
 	Delete(ctx context.Context, id uint) error
 	FindByID(ctx context.Context, id uint) (*User, error)
 	FindByEmail(ctx context.Context, email string) (*User, error)
-	FindAll(ctx context.Context, user *User) ([]*User, error)
+	GetAll(ctx context.Context) ([]*User, error)
 }
 
 type repository struct {
@@ -36,12 +36,15 @@ func (r *repository) Create(ctx context.Context, user *User) (*User, error) {
 	}
 	return user, nil
 }
+
 func (r *repository) Update(ctx context.Context, id uint, user *User) (*User, error) {
 	return nil, nil
 }
+
 func (r *repository) Delete(ctx context.Context, id uint) error {
 	return nil
 }
+
 func (r *repository) FindByID(ctx context.Context, id uint) (*User, error) {
 	var user User
 
@@ -54,6 +57,7 @@ func (r *repository) FindByID(ctx context.Context, id uint) (*User, error) {
 
 	return &user, nil
 }
+
 func (r *repository) FindByEmail(ctx context.Context, email string) (*User, error) {
 	var user User
 
@@ -66,6 +70,16 @@ func (r *repository) FindByEmail(ctx context.Context, email string) (*User, erro
 
 	return &user, nil
 }
-func (r *repository) FindAll(ctx context.Context, user *User) ([]*User, error) {
-	return nil, nil
+
+func (r *repository) GetAll(ctx context.Context) ([]*User, error) {
+	var users []*User
+
+	if err := r.db.WithContext(ctx).Find(&users).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound){
+			return nil, ErrNotFoundUser
+		}
+		return nil, err
+	}
+
+	return users, nil
 }

@@ -12,7 +12,7 @@ type Service interface {
 	Delete(ctx context.Context, id uint) error
 	FindByID(ctx context.Context, id uint) (*dto.UserResponse, error)
 	FindByEmail(ctx context.Context, email string) (*dto.UserResponse, error)
-	FindAll(ctx context.Context, req *dto.ListUserRequest) ([]dto.UserResponse, error)
+	GetAll(ctx context.Context) ([]*dto.UserResponse, error)
 }
 
 type service struct {
@@ -52,9 +52,11 @@ func (s *service) Create(ctx context.Context, req *dto.CreateUserRequest) (*dto.
 func (s *service) Update(ctx context.Context, id uint, req *dto.UpdateUserRequest) (*dto.UserResponse, error) {
 	return nil, nil
 }
+
 func (s *service) Delete(ctx context.Context, id uint) error {
 	return nil
 }
+
 func (s *service) FindByID(ctx context.Context, id uint) (*dto.UserResponse, error) {
 	user, err := s.repository.FindByID(ctx, id)
 	if err != nil {
@@ -62,6 +64,7 @@ func (s *service) FindByID(ctx context.Context, id uint) (*dto.UserResponse, err
 	}
 	return ToUserResponse(user), nil
 }
+
 func (s *service) FindByEmail(ctx context.Context, email string) (*dto.UserResponse, error) {
 	user, err := s.repository.FindByEmail(ctx, email)
 	if err != nil {
@@ -69,6 +72,13 @@ func (s *service) FindByEmail(ctx context.Context, email string) (*dto.UserRespo
 	}
 	return ToUserResponse(user), nil
 }
-func (s *service) FindAll(ctx context.Context, req *dto.ListUserRequest) ([]dto.UserResponse, error) {
-	return nil, nil
+
+func (s *service) GetAll(ctx context.Context) ([]*dto.UserResponse, error) {
+	users, err := s.repository.GetAll(ctx)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return ToUserResponses(users), nil
 }
