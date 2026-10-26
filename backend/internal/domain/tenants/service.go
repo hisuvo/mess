@@ -14,7 +14,7 @@ var (
 
 type Service interface {
 	CreateTenant(ctx context.Context, req *dto.RequestCreateTenant)  error
-	GetAll(ctx context.Context) ([]*dto.ResponseGetTenants, error)
+	GetAll(ctx context.Context) ([]*dto.ResponseTenant, error)
 	GetById(ctx context.Context, id uint) (*dto.ResponseTenant, error)
 	FindByEmail(ctx context.Context, email string) (*dto.ResponseTenant, error)
 	Update(ctx context.Context, tenant *dto.RequestUpdateTenant) (*dto.ResponseTenant, error)
@@ -65,10 +65,16 @@ func (s *service) CreateTenant(ctx context.Context,req *dto.RequestCreateTenant)
 		return nil
 }
 
+func (s *service) GetAll(ctx context.Context) ([]*dto.ResponseTenant, error){
+	tenants, err := s.repository.GetAll(ctx)
 
+	if err != nil {
+		return nil, err
+	}
 
-func (s *service) GetAll(ctx context.Context) ([]*dto.ResponseGetTenants, error){
-	return nil, nil
+	reponse := ToTenantsResponse(tenants)
+
+	return reponse, nil
 }
 
 func (s *service) GetById(ctx context.Context, id uint) (*dto.ResponseTenant, error){

@@ -31,10 +31,7 @@ func NewRepository(db *gorm.DB) Repository {
 }
 
 
-func (r *repository) CreateTenant(
-	ctx context.Context,
-	tenant *Tenant,
-) error {
+func (r *repository) CreateTenant(ctx context.Context, tenant *Tenant) error {
 	err := r.db.WithContext(ctx).Create(tenant).Error
 	
 	if err != nil {
@@ -49,7 +46,13 @@ func (r *repository) CreateTenant(
 }
 
 func (r *repository) GetAll(ctx context.Context) ([]*Tenant, error){
-	return nil, nil
+	var tenants []*Tenant
+
+	if err := r.db.WithContext(ctx).Find(&tenants).Error; err != nil {
+		return nil, err
+	}
+
+	return tenants, nil
 }
 
 func (r *repository) GetById(ctx context.Context, id uint) (*Tenant, error){

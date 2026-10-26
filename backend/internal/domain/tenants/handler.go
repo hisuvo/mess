@@ -37,7 +37,13 @@ func (h *handler) CreateTenant(c *echo.Context) error {
 }
 
 func (h *handler) GetAll(c *echo.Context) error {
-	return httpresponse.Success(c, http.StatusOK, "Tenant retrived successfully", nil)
+	tenants, err := h.service.GetAll(c.Request().Context())
+
+	if err != nil {
+		return httpresponse.Error(c, http.StatusOK, "Tenant retrived successfully", nil, err.Error())
+	}
+
+	return httpresponse.Success(c, http.StatusOK, "Tenant retrived successfully", tenants)
 }
 
 func (h *handler) GetById(c *echo.Context) error {

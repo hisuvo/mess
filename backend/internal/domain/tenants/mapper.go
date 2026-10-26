@@ -20,20 +20,13 @@ func ToTenantResponse(tenant *Tenant) *dto.ResponseTenant {
 	}
 }
 
-func ToTenantsResponse(tenants []Tenant) []dto.ResponseTenant {
+func ToTenantsResponse(tenants []*Tenant) []*dto.ResponseTenant {
 	if len(tenants) == 0 {
 		return nil
 	}
-	var tenantsResponse []dto.ResponseTenant
+	var tenantsResponse []*dto.ResponseTenant
 	for _, tenant := range tenants {
-		tenantsResponse = append(tenantsResponse, *ToTenantResponse(&tenant))
+		tenantsResponse = append(tenantsResponse, ToTenantResponse(tenant))
 	}
 	return tenantsResponse
-}
-
-func ToTenantResponseWithCount(tenants []Tenant, count int64) *dto.ResponseGetTenants {
-	return &dto.ResponseGetTenants{
-		Tenants: ToTenantsResponse(tenants),
-		Total:   count,
-	}
 }
