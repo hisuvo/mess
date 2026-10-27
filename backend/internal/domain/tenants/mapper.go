@@ -8,6 +8,7 @@ func ToTenantResponse(tenant *Tenant) *dto.ResponseTenant {
 	if tenant == nil {
 		return nil
 	}
+	
 	return &dto.ResponseTenant{
 		ID:        tenant.ID,
 		Name:      tenant.Name,
@@ -16,7 +17,6 @@ func ToTenantResponse(tenant *Tenant) *dto.ResponseTenant {
 		Email:     tenant.Email,
 		Status:    string(tenant.Status),
 		CreatedAt: tenant.CreatedAt,
-		UpdatedAt: tenant.UpdatedAt,
 	}
 }
 

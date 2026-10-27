@@ -13,8 +13,6 @@ func RegisterRoute(api *echo.Group, db *gorm.DB) {
 	api.POST("/tenant", handler.CreateTenant)
 	api.GET("/tenants", handler.GetAll)
 	api.GET("/tenant/:id", handler.GetById)
-	api.PUT("/tenant",handler.Update)
-	api.GET("/tenant/:email", handler.FindByEmail)
+	api.PUT("/tenant/:id",handler.Update)
 	api.DELETE("/tenant/:id", handler.Delete)
-
 }

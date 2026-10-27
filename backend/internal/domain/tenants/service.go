@@ -17,8 +17,8 @@ type Service interface {
 	GetAll(ctx context.Context) ([]*dto.ResponseTenant, error)
 	GetById(ctx context.Context, id uint) (*dto.ResponseTenant, error)
 	FindByEmail(ctx context.Context, email string) (*dto.ResponseTenant, error)
-	Update(ctx context.Context, tenant *dto.RequestUpdateTenant) (*dto.ResponseTenant, error)
-	Delete(ctx context.Context, id uint) (*dto.ResponseTenant, error)
+	Update(ctx context.Context, id uint, req *dto.RequestUpdateTenant) (*dto.ResponseTenant, error)
+	SoftDelete(ctx context.Context, id uint) (*dto.ResponseTenant, error)
 }
 
 type service struct {
@@ -30,7 +30,6 @@ func NewService(repository Repository) Service {
 		repository: repository,
 	}
 }
-
 
 func (s *service) CreateTenant(ctx context.Context,req *dto.RequestCreateTenant) error {
 	// Validate the request.
@@ -62,7 +61,7 @@ func (s *service) CreateTenant(ctx context.Context,req *dto.RequestCreateTenant)
 		return err
 	}
 
-		return nil
+	return nil
 }
 
 func (s *service) GetAll(ctx context.Context) ([]*dto.ResponseTenant, error){
@@ -78,17 +77,59 @@ func (s *service) GetAll(ctx context.Context) ([]*dto.ResponseTenant, error){
 }
 
 func (s *service) GetById(ctx context.Context, id uint) (*dto.ResponseTenant, error){
-	return nil, nil
+	tenant, err := s.repository.GetById(ctx, id)
+
+	if err != nil {
+		return nil, err
+	}
+
+	response := ToTenantResponse(tenant)
+
+	return response, nil
 }
 
 func (s *service) FindByEmail(ctx context.Context, email string) (*dto.ResponseTenant, error){
 	return nil, nil
 }
 
-func (s *service) Update(ctx context.Context, tenant *dto.RequestUpdateTenant) (*dto.ResponseTenant, error){
-	return nil, nil
+func (s *service) Update(ctx context.Context, id uint, req *dto.RequestUpdateTenant ) (*dto.ResponseTenant, error) {
+	// Validate the tenant ID.
+	if id == 0 {
+		return nil, ErrTenantNotFound
+	}
+
+	// Reject a nil request.
+	if req == nil {
+		return nil, errors.New("update request cannot be nil")
+	}
+
+	// Build the tenant model from the request.
+	// Set the existing tenant ID.
+	// This ensures that the correct record is updated.
+	tenant := &Tenant{
+		ID: id,
+		Name: req.Name,
+		Email: req.Email,
+		Phone: req.Phone,
+		Address: req.Address,
+	}
+
+	// Delegate the database operation to the repository.
+	updatedTenant, err := s.repository.Update(ctx, id, tenant)
+	if err != nil {
+		return nil, err
+	}
+
+	// Return the updated tenant.
+	return ToTenantResponse(updatedTenant), nil
 }
 
-func (s *service) Delete(ctx context.Context, id uint) (*dto.ResponseTenant, error){
-	return nil, nil
+func (s *service) SoftDelete(ctx context.Context, id uint) (*dto.ResponseTenant, error){
+	tenant, err := s.repository.SoftDelete(ctx, id)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return ToTenantResponse(tenant), nil
 }
