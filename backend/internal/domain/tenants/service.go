@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 	"messify/internal/domain/tenants/dto"
+	"messify/internal/pkg/querybuilder"
+	"net/url"
 	"strings"
 )
 
@@ -14,7 +16,7 @@ var (
 
 type Service interface {
 	CreateTenant(ctx context.Context, req *dto.RequestCreateTenant)  error
-	GetAll(ctx context.Context) ([]*dto.ResponseTenant, error)
+	GetAll(ctx context.Context, params url.Values) ([]*dto.ResponseTenant, querybuilder.Pagination, error)
 	GetById(ctx context.Context, id uint) (*dto.ResponseTenant, error)
 	FindByEmail(ctx context.Context, email string) (*dto.ResponseTenant, error)
 	Update(ctx context.Context, id uint, req *dto.RequestUpdateTenant) (*dto.ResponseTenant, error)
@@ -64,16 +66,17 @@ func (s *service) CreateTenant(ctx context.Context,req *dto.RequestCreateTenant)
 	return nil
 }
 
-func (s *service) GetAll(ctx context.Context) ([]*dto.ResponseTenant, error){
-	tenants, err := s.repository.GetAll(ctx)
+func (s *service) GetAll(ctx context.Context, params url.Values) ([]*dto.ResponseTenant, querybuilder.Pagination, error){
+	// Delegate database operations to the repository.
+	tenants, pagination, err := s.repository.GetAll(ctx, params)
 
 	if err != nil {
-		return nil, err
+		return nil, querybuilder.Pagination{}, err
 	}
 
 	reponse := ToTenantsResponse(tenants)
 
-	return reponse, nil
+	return reponse, pagination, nil
 }
 
 func (s *service) GetById(ctx context.Context, id uint) (*dto.ResponseTenant, error){

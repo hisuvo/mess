@@ -38,7 +38,11 @@ func (h *handler) CreateTenant(c *echo.Context) error {
 }
 
 func (h *handler) GetAll(c *echo.Context) error {
-	tenants, err := h.service.GetAll(c.Request().Context())
+	// Extract the request context and URL query parameters.
+	ctx := c.Request().Context()
+	params := c.QueryParams()
+
+	tenants, _, err := h.service.GetAll(ctx, params)
 
 	if err != nil {
 		return httpresponse.Error(c, http.StatusOK, "Tenant retrived successfully", nil, err.Error())

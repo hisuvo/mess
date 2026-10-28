@@ -3,6 +3,9 @@ package tenants
 import (
 	"context"
 	"errors"
+	"fmt"
+	"messify/internal/pkg/querybuilder"
+	"net/url"
 
 	"gorm.io/gorm"
 )
@@ -15,7 +18,7 @@ var (
 
 type Repository interface {
 	CreateTenant(ctx context.Context, tenant *Tenant) error
-	GetAll(ctx context.Context) ([]*Tenant, error)
+	GetAll(ctx context.Context, params url.Values) ([]*Tenant, querybuilder.Pagination, error)
 	GetById(ctx context.Context, id uint) (*Tenant, error)
 	FindByEmail(ctx context.Context, email string) (*Tenant, error)
 	Update(ctx context.Context, id uint, tenant *Tenant) (*Tenant, error)
@@ -46,14 +49,61 @@ func (r *repository) CreateTenant(ctx context.Context, tenant *Tenant) error {
 	return nil
 }
 
-func (r *repository) GetAll(ctx context.Context) ([]*Tenant, error){
+func (r *repository) GetAll(ctx context.Context, params url.Values) ([]*Tenant, querybuilder.Pagination, error){
 	var tenants []*Tenant
+	var total int64
 
-	if err := r.db.WithContext(ctx).Find(&tenants).Error; err != nil {
-		return nil, err
+
+	// Only these columns can be sorted.
+	allowedSortFields := []string {
+		"id",
+		"name",
+		"email",
+		"created_at",
 	}
 
-	return tenants, nil
+	// Parse and validate query parameters.
+	options := querybuilder.Parse(params, allowedSortFields)
+
+	// Start with a context-aware database query
+	db := r.db.WithContext(ctx).Model(&Tenant{})
+
+	// Apply search before counting and pagination.
+	db = querybuilder.ApplySearch(
+		db,
+		options.Search,
+		[]string{"name", "email"},
+	)
+
+	// Count matching records before applying LIMIT/OFFSET.
+	if err := db.Count(&total).Error; err != nil {
+		return nil, querybuilder.Pagination{}, err
+	}
+
+
+	// Apply sorting and pagination.
+	db = querybuilder.ApplySorting(
+		db,
+		options,
+		"created_at",
+		allowedSortFields,
+	)
+
+	db = querybuilder.ApplyPagination(db, options)
+
+	if err := db.Find(&tenants).Error; err != nil {
+		return nil, querybuilder.Pagination{}, err
+	}
+
+	meta := querybuilder.BuildPagination(
+		options.Page,
+		options.Limit,
+		total,
+	)
+
+	fmt.Println("this is meta data of tenants ->", meta)
+
+	return tenants, meta, nil
 }
 
 func (r *repository) GetById(ctx context.Context, id uint) (*Tenant, error) {
