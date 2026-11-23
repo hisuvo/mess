@@ -55,12 +55,7 @@ func (r *repository) GetAll(ctx context.Context, params url.Values) ([]*Tenant, 
 
 
 	// Only these columns can be sorted.
-	allowedSortFields := []string {
-		"id",
-		"name",
-		"email",
-		"created_at",
-	}
+	allowedSortFields := []string {"id","name","email","created_at"}
 
 	// Parse and validate query parameters.
 	options := querybuilder.Parse(params, allowedSortFields)

@@ -30,16 +30,16 @@ func (h *handler) Create(c *echo.Context) error {
 	var req *dto.CreateUserRequest
 
 	if err := c.Bind(&req); err != nil {
-		return httpresponse.Error(c, http.StatusBadRequest, "Invalid request", nil, err.Error())
+		return httpresponse.Error(c, http.StatusBadRequest, "Invalid request", err.Error())
 	}
 	if err := c.Validate(req); err != nil {
-		return httpresponse.Error(c, http.StatusBadRequest, "Validation failed", nil, err.Error())
+		return httpresponse.Error(c, http.StatusBadRequest, "Validation failed", err.Error())
 	}
 
 	result, err := h.service.Create(c.Request().Context(), req)
 
 	if err != nil {
-		return httpresponse.Error(c, http.StatusBadRequest, "User created failed", nil, err.Error())
+		return httpresponse.Error(c, http.StatusBadRequest, "User created failed", err.Error())
 	}
 
 	return httpresponse.Success(c, http.StatusCreated, "User created successfully", result)
@@ -57,13 +57,13 @@ func (h *handler) FindByID(c *echo.Context) error {
 	id, err := strconv.Atoi(c.Param("id"))
 
 	if err != nil {
-		return httpresponse.Error(c, http.StatusBadRequest, "Invalid user ID", nil, err.Error())
+		return httpresponse.Error(c, http.StatusBadRequest, "Invalid user ID", err.Error())
 	}
 
 	result, err := h.service.FindByID(c.Request().Context(), uint(id))
 
 	if err != nil {
-		return httpresponse.Error(c, http.StatusInternalServerError, "Failed to find user", nil, err.Error())
+		return httpresponse.Error(c, http.StatusInternalServerError, "Failed to find user", err.Error())
 	}
 
 	return httpresponse.Success(c, http.StatusOK, "User found successfully", result)
@@ -77,7 +77,7 @@ func (h *handler) GetAll(c *echo.Context) error {
 	response, err := h.service.GetAll(c.Request().Context())
 
 	if err != nil {
-		return httpresponse.Error(c, http.StatusNotFound, "user not found", nil, err.Error())
+		return httpresponse.Error(c, http.StatusNotFound, "user not found", err.Error())
 	}
 
 	return httpresponse.Success(c, http.StatusOK, "user retrived successfully", response)

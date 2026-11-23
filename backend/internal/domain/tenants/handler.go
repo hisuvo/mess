@@ -23,15 +23,15 @@ func (h *handler) CreateTenant(c *echo.Context) error {
 	var tenant dto.RequestCreateTenant
 
 	if err := c.Bind(&tenant); err != nil {
-		return httpresponse.Error(c, http.StatusBadRequest, "invalied tenant field request", nil, err.Error())
+		return httpresponse.Error(c, http.StatusBadRequest, "invalied tenant field request", err.Error())
 	}
 
 	if err := c.Validate(&tenant); err != nil {
-		return httpresponse.Error(c, http.StatusBadRequest, "tenant validation request failed", nil, err.Error())
+		return httpresponse.Error(c, http.StatusBadRequest, "tenant validation request failed", err.Error())
 	}
 
 	if err := h.service.CreateTenant(c.Request().Context(), &tenant); err != nil {
-		return httpresponse.Error(c, http.StatusBadRequest, "tenant created request failed", nil, err.Error())
+		return httpresponse.Error(c, http.StatusBadRequest, "tenant created request failed", err.Error())
 	}
 
 	return httpresponse.Success(c, http.StatusOK, "Tenant create successfully", nil)
@@ -42,13 +42,13 @@ func (h *handler) GetAll(c *echo.Context) error {
 	ctx := c.Request().Context()
 	params := c.QueryParams()
 
-	tenants, _, err := h.service.GetAll(ctx, params)
+	tenants, pagination, err := h.service.GetAll(ctx, params)
 
 	if err != nil {
-		return httpresponse.Error(c, http.StatusOK, "Tenant retrived successfully", nil, err.Error())
+		return httpresponse.Error(c, http.StatusOK, "Tenant retrived successfully", err.Error())
 	}
 
-	return httpresponse.Success(c, http.StatusOK, "Tenant retrived successfully", tenants)
+	return httpresponse.GetAllSuccess(c, http.StatusOK, "Tenant retrived successfully", tenants, pagination)
 }
 
 func (h *handler) GetById(c *echo.Context) error {
@@ -56,14 +56,14 @@ func (h *handler) GetById(c *echo.Context) error {
 	id , err := validator.ParseUintID(c.Param("id"))
 
 	if err != nil {
-		return httpresponse.Error(c, http.StatusBadRequest,"Invalid tenant ID", nil, err.Error())
+		return httpresponse.Error(c, http.StatusBadRequest,"Invalid tenant ID", err.Error())
 	}
 
 	tenant, err := h.service.GetById(c.Request().Context(), id)
 
 
 	if err != nil {
-		return httpresponse.Error(c, http.StatusOK,"your tenant get by id successfullyD", nil, err.Error())
+		return httpresponse.Error(c, http.StatusOK,"your tenant get by id successfullyD", err.Error())
 	}
 
 	return httpresponse.Success(c, http.StatusOK,"your tenant get by id successfullyD", tenant)
@@ -73,13 +73,13 @@ func (h *handler) Delete(c *echo.Context) error {
 	id, err := validator.ParseUintID(c.Param("id"))
 
 	if err != nil {
-		return httpresponse.Error(c, http.StatusBadRequest,"Invalid tenant ID", nil, err.Error())
+		return httpresponse.Error(c, http.StatusBadRequest,"Invalid tenant ID", err.Error())
 	}
 
 	result, err := h.service.SoftDelete(c.Request().Context(), id)
 
 	if err != nil {
-		return httpresponse.Error(c, http.StatusNotFound, "tenant delete failed", nil, err.Error())
+		return httpresponse.Error(c, http.StatusNotFound, "tenant delete failed", err.Error())
 	}
 
 	return httpresponse.Success(c, http.StatusOK, "tenant deleted successfullyD", result)
@@ -89,7 +89,7 @@ func (h *handler) Update(c *echo.Context) error {
 	id, err := validator.ParseUintID(c.Param("id"))
 
 	if err != nil {
-		return httpresponse.Error(c, http.StatusBadRequest,"Invalid tenant ID", nil, err.Error())
+		return httpresponse.Error(c, http.StatusBadRequest,"Invalid tenant ID", err.Error())
 	}
 
 	var req dto.RequestUpdateTenant
@@ -98,17 +98,17 @@ func (h *handler) Update(c *echo.Context) error {
 	req.ID = id
 
 	if err := c.Bind(&req); err != nil {
-		return httpresponse.Error(c, http.StatusBadRequest, "invalied tenant field request", nil, err.Error())
+		return httpresponse.Error(c, http.StatusBadRequest, "invalied tenant field request", err.Error())
 	}
 
 	if err := c.Validate(&req); err != nil {
-		return httpresponse.Error(c, http.StatusBadRequest, "tenant validation request failed", nil, err.Error())
+		return httpresponse.Error(c, http.StatusBadRequest, "tenant validation request failed", err.Error())
 	}
 
 	response, err := h.service.Update(c.Request().Context(), id, &req);
 
 	if err != nil {
-		return httpresponse.Error(c, http.StatusBadRequest, "tenant created request failed", nil, err.Error())
+		return httpresponse.Error(c, http.StatusBadRequest, "tenant created request failed", err.Error())
 	}
 	
 	return httpresponse.Success(c, http.StatusOK, "tenant update successfully", response)

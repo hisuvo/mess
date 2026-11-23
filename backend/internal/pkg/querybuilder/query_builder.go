@@ -23,7 +23,7 @@ type Options struct {
 type Pagination struct {
 	Page int `json:"page"`
 	Limit int `json:"limit"`
-	Total int 	`json:"total"`
+	Total int `json:"total"`
 	TotalPages int `json:"total_pagess"`
 }
 
@@ -62,12 +62,7 @@ func Parse(values url.Values, allowedSortFields []string) Options {
 
 // ApplySorting applies sorting only to an approved column.
 // The column name must come from the server-side allowlist.
-func ApplySorting(
-	db *gorm.DB,
-	options Options,
-	defaultSort string,
-	allowedSortFields []string,
-) *gorm.DB {
+func ApplySorting(db *gorm.DB,options Options,defaultSort string,allowedSortFields []string ) *gorm.DB {
 	sortBy := options.SortBy
 
 	if !contains(allowedSortFields, sortBy) {
