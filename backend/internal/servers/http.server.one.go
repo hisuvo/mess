@@ -42,6 +42,10 @@ func Srart(db *gorm.DB, config *config.Config) error {
 	// middleware
 	e.Use(middleware.RequestLogger())
 	e.Use(middleware.Recover())
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+			AllowOrigins:     []string{"http://localhost:5173"},
+			AllowCredentials: true,
+		}))
 
 
 	// api routes

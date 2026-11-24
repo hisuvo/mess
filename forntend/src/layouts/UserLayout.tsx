@@ -1,20 +1,10 @@
 // import React from 'react'
 
-import { NavLink, Outlet } from "react-router"
+import { Outlet } from "react-router"
 
 const UserLayout = () => {
   return (
     <div>
-      <aside>
-        <h2>User Panel</h2>
-        
-        <p><NavLink to="/admin" >Dashboard</NavLink></p>
-        <p><NavLink to="/admin/users" >Users1</NavLink></p>
-        <p><NavLink to="/admin/users" >Users2</NavLink></p>
-        <p><NavLink to="/admin/users" >Users3</NavLink></p>
-        <p><NavLink to="/admin/users" >Users4</NavLink></p>
-      </aside>
-
       <main className="flex-1 p-6">
         <Outlet/>
       </main>
